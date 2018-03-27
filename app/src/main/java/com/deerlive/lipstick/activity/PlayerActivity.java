@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -82,6 +84,8 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
 
     @Bind(R.id.marText)
     MarqueeTextView marText;
+    @Bind(R.id.iv_finger)
+    ImageView ivFinger;
     private String mTag = "PlayerActivity";
     private String mIsOnline = "0";
     private RtcEngine mRtcEngine;
@@ -284,6 +288,16 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     TXCloudVideoView mPlayView;
 
     private void initTencentPlayer() {
+
+
+        TranslateAnimation animation = new TranslateAnimation(0, -15, 0, 0);
+        animation.setInterpolator(new OvershootInterpolator());
+        animation.setDuration(250);
+        animation.setRepeatCount(1000);
+        animation.setRepeatMode(Animation.REVERSE);
+        ivFinger.startAnimation(animation);
+
+
         //mPlayerView即step1中添加的界面view
         mPlayView = findViewById(R.id.player_surface);
         //创建player对象
@@ -1338,6 +1352,10 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
         }
         return true;
     }
+    @OnClick(R.id.layout_prize)
+    public void onViewClicked() {
+        //奖品列表
 
+    }
 
 }
