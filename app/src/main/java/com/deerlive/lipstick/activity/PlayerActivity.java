@@ -2,11 +2,10 @@ package com.deerlive.lipstick.activity;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.media.projection.MediaProjectionManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -46,6 +45,7 @@ import com.deerlive.lipstick.adapter.MessageRecyclerListAdapter;
 import com.deerlive.lipstick.agora.MyEngineEventHandler;
 import com.deerlive.lipstick.base.BaseActivity;
 import com.deerlive.lipstick.common.Api;
+import com.deerlive.lipstick.common.Contacts;
 import com.deerlive.lipstick.common.GlideCircleTransform;
 import com.deerlive.lipstick.common.ScreenRecorder;
 import com.deerlive.lipstick.common.SoundUtils;
@@ -75,6 +75,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import io.agora.AgoraAPI;
 import io.agora.AgoraAPIOnlySignal;
+import io.agora.NativeAgoraAPI;
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
@@ -86,6 +87,8 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     MarqueeTextView marText;
     @Bind(R.id.iv_finger)
     ImageView ivFinger;
+    @Bind(R.id.layout_prize)
+    RelativeLayout layoutPrize;
     private String mTag = "PlayerActivity";
     private String mIsOnline = "0";
     private RtcEngine mRtcEngine;
@@ -178,6 +181,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     private ScreenRecorder mRecorder;
     private int mNum = 0;
     private LampBean lampBean = new LampBean();
+    private String mRelpace="";
 
 
     @Override
@@ -218,64 +222,6 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
         mImageCaozuoRight.setOnTouchListener(this);
         mImageCaozuoUp.setOnTouchListener(this);
     }
-/*
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    private void initScreenRecorder() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mMediaProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
-
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    private void startRecord() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (mMediaProjectionManager != null) {
-                Intent captureIntent = mMediaProjectionManager.createScreenCaptureIntent();
-                startActivityForResult(captureIntent, REQUEST_CODE);
-            }
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    private void closeRecord() {
-        if (mRecorder != null) {
-            mRecorder.quit();
-            mRecorder = null;
-            myHandler.sendEmptyMessageDelayed(UPLOAD_RECORD, 1000);
-        }
-    }
-
-    private void uploadRecord() {
-        if (file != null) {
-            RequestParams p = new RequestParams();
-            try {
-                p.put("smeta", file);
-                p.put("matchId", mCurMatchId);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-
-            Api.uploadFile(getApplicationContext(), p, new OnRequestDataListener() {
-                @Override
-                public void requestSuccess(int code, JSONObject data) {
-                    if (file.exists()) {
-                        file.delete();
-                        file = null;
-                    }
-                }
-
-                @Override
-                public void requestFailure(int code, String msg) {
-                    if (file.exists()) {
-                        file.delete();
-                        file = null;
-                    }
-                }
-            });
-        }
-    }*/
 
     private void initBgm() {
         Random r = new Random();
@@ -290,12 +236,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     private void initTencentPlayer() {
 
 
-        TranslateAnimation animation = new TranslateAnimation(0, -15, 0, 0);
-        animation.setInterpolator(new OvershootInterpolator());
-        animation.setDuration(250);
-        animation.setRepeatCount(1000);
-        animation.setRepeatMode(Animation.REVERSE);
-        ivFinger.startAnimation(animation);
+
 
 
         //mPlayerView即step1中添加的界面view
@@ -309,7 +250,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
             @Override
             public void onPlayEvent(int i, Bundle bundle) {
 
-                LogUtils.i("TXLiveConstants==",i+"");
+                LogUtils.i("TXLiveConstants==", i + "");
 
             }
 
@@ -322,9 +263,9 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     }
 
     private void enterPlayer() {
-        Map<String,String>p=new HashMap<>();
+        Map<String, String> p = new HashMap<>();
         p.put("token", mToken);
-        p.put("deviceid",String.valueOf( mRemoteUid));
+        p.put("deviceid", String.valueOf(mRemoteUid));
         Api.enterPlayer(this, p, new OnRequestDataListener() {
             @Override
             public void requestSuccess(int code, JSONObject data) {
@@ -332,7 +273,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
                 JSONArray dm = data.getJSONArray("msg");
                 mChannelStatus = d.getString("channel_status");
                 mmPlayPrice = d.getString("price");
-                mPlayPrice.setText("x"+mmPlayPrice);
+                mPlayPrice.setText("x" + mmPlayPrice);
                 mCurPlayerId = d.getString("uid");
                 mCurPlayerName = d.getString("user_nicename");
                 mCurPlayerAvatar = d.getString("avatar");
@@ -368,7 +309,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
         mYinXiao = SPUtils.getInstance().getString("yinxiao");
         mPlayBalance.setText(mmPlayBalance);
         DeviceAndBanner.InfoBean.DeviceBean item = (DeviceAndBanner.InfoBean.DeviceBean) data.getSerializable("item");
-        if((item != null ? item.getDeviceid() : null) !=null){
+        if ((item != null ? item.getDeviceid() : null) != null) {
 
             mRemoteUid = Integer.parseInt(item.getDeviceid());
             mChannleName = item.getDeviceid();
@@ -378,15 +319,38 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
         getChannelKey();
     }
 
+    /**
+     * 获取设备key、用户金币数量
+     */
     private void getChannelKey() {
-        Map<String,String>params=new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("token", mToken);
         params.put("deviceid", mChannleName);
         Api.getChannelKey(this, params, new OnRequestDataListener() {
             @Override
             public void requestSuccess(int code, JSONObject data) {
-                mChannelKey = data.getString("info");
+                JSONObject info = data.getJSONObject("info");
+                mChannelKey = info.getString("key");
+                mRelpace = info.getString("balance");
+                int status = info.getInteger("status");
+                if (status == 0) {
+                    layoutPrize.setVisibility(View.GONE);
+                } else {
+                    layoutPrize.setVisibility(View.VISIBLE);
+                    TranslateAnimation animation = new TranslateAnimation(0, -15, 0, 0);
+                    animation.setInterpolator(new OvershootInterpolator());
+                    animation.setDuration(250);
+                    animation.setRepeatCount(1000);
+                    animation.setRepeatMode(Animation.REVERSE);
+                    ivFinger.startAnimation(animation);
+
+                }
+                if (mRelpace != null) {
+                    mPlayBalance.setText(mRelpace);
+                }
+
                 initAgora();
+
             }
 
             @Override
@@ -462,6 +426,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
             }
         }
     }
+
     /**
      * 在线人数查询
      */
@@ -478,7 +443,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
                 mPlayerNum.setText(lampBean.getRand() + getResources().getString(R.string.play_num));
                 myHandler.sendEmptyMessageDelayed(SENJION, 3000);
 
-                if(lampBean.getInfo()!=null&&lampBean.getInfo().size()!=0){
+                if (lampBean.getInfo() != null && lampBean.getInfo().size() != 0) {
                     marText.setVisibility(View.VISIBLE);
                     getMarqueeView();
                 }
@@ -492,9 +457,9 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     }
 
     private void getMarqueeView() {
-        String str="";
-        for(LampBean.InfoBean  s:lampBean.getInfo()){
-            str=str+s.getContent()+"      ";
+        String str = "";
+        for (LampBean.InfoBean s : lampBean.getInfo()) {
+            str = str + s.getContent() + "      ";
         }
         marText.setText(str);
     }
@@ -540,12 +505,11 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     }
 
 
-
     private void initAgoraIm() {
         m_agoraAPI = AgoraAPIOnlySignal.getInstance(this, getResources().getString(R.string.agora_appid));
         int sdkVersion = m_agoraAPI.getSdkVersion();
 
-        log("sdkVersion=="+sdkVersion);
+        log("sdkVersion==" + sdkVersion);
         if (m_agoraAPI.isOnline() == 0) {
             m_agoraAPI.login2(getResources().getString(R.string.agora_appid), mLocalUid + "", mSignalKey, 0, "", 5, 5);
         } else {
@@ -688,7 +652,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
 
     private void startRequestmatchId() {
         mCurMatchId = "";
-        Map<String,String> p=new HashMap<>();
+        Map<String, String> p = new HashMap<>();
 
         p.put("token", mToken);
         p.put("deviceid", String.valueOf(mRemoteUid));
@@ -754,12 +718,13 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     }
 
     RecordZjFragment rf;
+
     public void showRecord(View v) {
 
 
         RecordFragment recordFragment = RecordFragment.newInstance(mChannleName);
 
-        recordFragment.show(getFragmentManager(),"recordFragment");
+        recordFragment.show(getFragmentManager(), "recordFragment");
 
     }
 
@@ -858,19 +823,19 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
                     break;
                 case MessageType.GAME_CONNECTTED:
                     changeChannelStatus("5", null);
-                   // startRecord();
+                    // startRecord();
                     break;
                 case INIT_IM:
                     initAgoraIm();
                     break;
                 case IM_ONLINE_NUM:
-                   // mPlayerNum.setText(mOnlineNum + getResources().getString(R.string.play_num));
+                    // mPlayerNum.setText(mOnlineNum + getResources().getString(R.string.play_num));
                     break;
                 case IM_ONLINE_LEAVE:
-                   // mPlayerNum.setText((mOnlineNum--) + getResources().getString(R.string.play_num));
+                    // mPlayerNum.setText((mOnlineNum--) + getResources().getString(R.string.play_num));
                     break;
                 case IM_ONLINE_JOIN:
-                   // mPlayerNum.setText((mOnlineNum++) + getResources().getString(R.string.play_num));
+                    // mPlayerNum.setText((mOnlineNum++) + getResources().getString(R.string.play_num));
                     break;
                 case UPLOAD_RECORD:
                     //uploadRecord();
@@ -1067,7 +1032,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
             if (soundPool != null) {
                 soundPool.play(soundID.get("fail"), 1, 1, 0, 0, 1);
             }
-           // closeRecord();
+            // closeRecord();
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -1294,7 +1259,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     @Override
     public void onPause() {
         super.onPause();
-       // closeRecord();
+        // closeRecord();
     }
 
 
@@ -1352,10 +1317,23 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
         }
         return true;
     }
+
     @OnClick(R.id.layout_prize)
     public void onViewClicked() {
         //奖品列表
-
+        Intent intent = new Intent(this, PrizeListActivity.class);
+        intent.putExtra(Contacts.DEVICE_ID, mRemoteUid);
+        intent.putExtra("bt",0);
+        startActivityForResult(intent,Contacts.QUESTION_CODE);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==Contacts.QUESTION_CODE){
+            if(resultCode==Contacts.RESULT_CODE){
+                mRelpace= data.getStringExtra("id");
+            }
+        }
+    }
 }

@@ -98,5 +98,10 @@
         <!-- 按钮字体颜色,全部一起改，单个改需要在Java代码中修改 -->
        <!-- <item name="colorAccent">@color/app_main_color</item>-->
     </style>
-
+ <style name="ProgressBarStyle">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@mipmap/iv_progress</item>
+        <item name="android:minHeight">20dip</item>
+        <item name="android:maxHeight">20dip</item>
+    </style>
 </resources>

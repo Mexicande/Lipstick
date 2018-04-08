@@ -12,6 +12,7 @@ import com.deerlive.lipstick.activity.IntegarlCoinListActivity;
 import com.deerlive.lipstick.intf.OnRequestDataListener;
 import com.deerlive.lipstick.utils.AppUtils;
 import com.deerlive.lipstick.utils.LogUtils;
+import com.deerlive.lipstick.utils.SPUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
@@ -27,20 +28,22 @@ import java.util.Map;
  */
 public class Api {
     public static final String APP_VER = AppUtils.getAppVersionCode()+"";
-    public static final String HOST = "http://doll.anwenqianbao.com/";
+    public static final String HOST = "http://test.doll.anwenqianbao.com/";
     public static final String OS = "android";
     public static final String QUDAO = "kuailai-two";
+
 
     public static final String OS_VER = Build.VERSION.RELEASE;
     private static final String KEY = "HZ1lERfDhUqNuUQ42PfX5lALvKlaTQxT";
     private static final String LOGIN = HOST + "Api/SiSi/sendOauthUserInfo";
+    public static final String ANNUNCIATE = HOST + "Api/SiSi/notice";
     private static final String GET_BANNER = HOST + "Api/SiSi/getBanner";
     private static final String GET_GAME = HOST + "Api/SiSi/getLiveBanner";
-    private static final String GET_CHANNEL_KEY = HOST + "Api/SiSi/getChannelKey";
+    private static final String GET_CHANNEL_KEY = HOST + "Api/SiSi/getChannelKeys";
     //帮助
     public static final String URL_GAME_HELP = HOST + "/portal/appweb/help?qudao="+QUDAO;
     //邀请
-    public static final String URL_GAME_YAOQING = HOST + "/portal/appweb/my_code_hong?qudao="+QUDAO;
+    public static final String URL_GAME_YAOQING = HOST + "/portal/appweb/my_code?qudao="+QUDAO;
     //邀请码
     public static final String URL_GAME_YAOQINGMA = HOST + "/portal/appweb/input_code?qudao="+QUDAO;
     //问题反馈
@@ -50,18 +53,37 @@ public class Api {
     //协议
     public static final String URL_GAME_XIEYI = HOST + "portal/page/index/id/2?qudao="+QUDAO;
 
-    private static final String CHECK_UPDATE = HOST + "Api/SiSi/checkAndroidVer";
+    //查询在线人数/跑马灯
+    public static final String GET_LAMP=HOST+"Api/SiSi/getLamp";
+    //游戏时间
+    public static final String GET_GAMETIME=HOST+"Api/SiSi/spendTime";
+    //开始游戏
+    public static final String GET_STARTGAME=HOST+"Api/SiSi/startGames";
+    //小程序免费次数和金额
+    public static final String GET_FREE=HOST+"Api/SiSi/gameFree";
+    //娃娃代抓列表
+    public static final String GET_DOLLLIST=HOST+"Api/SiSi/dollList";
+    //游戏列表
+    public static final String GET_GAMELSIT=HOST+"Api/SiSi/gameList";
+    //代抓提取
+    public static final String GET_REPLACEDOLL=HOST+"Api/SiSi/replaceDoll";
+    //升级更新
+    public static final String GET_UPDATE=HOST+"Api/SiSi/checkAndroid";
+
+    //游戏时间
+    public static final String GET_GAMERECORD=HOST+"Api/SiSi/startRecord";
+    //分享回调
+    public static final String SHARE_BACK=HOST+"Api/SiSi/shareWX";
+
+
+    private static final String CHECK_UPDATE = HOST + "Api/SiSi/checkAndroidVer"
+            ;
     private static final String ENTER_PLAYER = HOST + "Api/SiSi/enterDeviceRoom";
     private static final String GET_LATEST_DEVICE_RECORD = HOST + "Api/SiSi/getWinLogByDeviceid";
     //收货地址
     private static final String GET_SHOUHUO_LOCATION = HOST + "Api/SiSi/getAddress";
     //广告弹窗
     private static final String GET_DIALOG = HOST + "Api/SiSi/pushPopup";
-    //查询在线人数/跑马灯
-    public static final String GET_LAMP=HOST+"Api/SiSi/getLamp";
-
-    //分享回调
-    public static final String SHARE_BACK=HOST+"Api/SiSi/shareWX";
 
     //收货地址修改和添加
     private static final String SET_SHOUHUO_LOCATION = HOST + "Api/SiSi/addAddress";
@@ -79,11 +101,13 @@ public class Api {
     private static final String GET_USER_INFO = HOST + "Api/SiSi/getTokenInfo";
     //充值
     private static final String GET_PAY_METHOD = HOST + "Api/SiSi/get_recharge";
+    //充值
+    private static final String GET_RANKLSIT = HOST + "Api/SiSi/recordLog";
     //积分商城  积分
     private static final String STORE_INTEGAR=HOST+"Api/SiSi/convertList";
     private static final String BEGIN_PAY = HOST + "Api/Pay/begin_pay";
     private static final String REQUEST_CONNECT_DEVICE = HOST + "Api/SiSi/connDeviceControl";
-   // private static final String GET_NOTAKEN_WAWA = HOST + "Api/SiSi/getNotTakenWawaByUid";
+    // private static final String GET_NOTAKEN_WAWA = HOST + "Api/SiSi/getNotTakenWawaByUid";
     private static final String GET_NOTAKEN_WAWA = HOST + "Api/SiSi/getNotTakenWawaByToken";
     private static final String GET_MESSAGE = HOST + "Api/SiSi/pushNotice";
     //private static final String APPLY_POST_DUIHUAN_WAWA = HOST + "Api/SiSi/applyPostWawa";
@@ -99,20 +123,38 @@ public class Api {
         //SFProgrssDialog dialog = SFProgrssDialog.show(context,"请稍后...");
         newExcuteMapPost(GET_PAY_TYPE, context, params,listener);
     }
+    public static void getDollList(final Context context, Map<String, String> params, final OnRequestDataListener listener) {
+        newExcuteMapPost(GET_DOLLLIST, context, params,listener);
+    }
+
+    public static void getReplacedoll(final Context context, Map<String, String> params, final OnRequestDataListener listener) {
+        newExcuteMapPost(GET_REPLACEDOLL, context, params,listener);
+    }
     public static void applyPostOrDuiHuanWaWa(final Context context, JSONObject params, final OnRequestDataListener listener) {
         newExcuteJsonPost(APPLY_POST_DUIHUAN_WAWA, context, params,listener);
     }
     //广告弹窗
     public static void getDialog(MainActivity mainActivity, Map<String, String> stringStringHashMap, OnRequestDataListener onRequestDataListener) {
         newExcuteMapPost(GET_DIALOG, mainActivity, stringStringHashMap,onRequestDataListener);
+    }
+    //游戏时间
+    public static void getGameRecord(final Context context, Map<String, String> stringStringHashMap, OnRequestDataListener onRequestDataListener) {
+        newExcuteMapPost(GET_GAMERECORD, context, stringStringHashMap,onRequestDataListener);
+    }
+    //小游戏免费次数和金额
+    public static void getGameFree(final Context context, Map<String, String> stringStringHashMap, OnRequestDataListener onRequestDataListener) {
+        newExcuteMapPost(GET_FREE, context, stringStringHashMap,onRequestDataListener);
 
     }
+    //游戏时间
+    public static void getGameTime(final Context context, Map<String, String> stringStringHashMap, OnRequestDataListener onRequestDataListener) {
+        newExcuteMapPost(GET_GAMETIME, context, stringStringHashMap,onRequestDataListener);
 
-    public static void backShare(final Context context,  Map<String, String> params, final OnRequestDataListener listener) {
-        newExcuteMapPost(SHARE_BACK, context, params,listener);
     }
-    public static void getLamp(final Context context, Map<String, String> params, final OnRequestDataListener listener) {
-        newExcuteMapPost(GET_LAMP, context, params,listener);
+    //GET_STARTGAME
+    public static void setStartGame(final Context context, Map<String, String> stringStringHashMap, OnRequestDataListener onRequestDataListener) {
+        newExcuteMapPost(GET_STARTGAME, context, stringStringHashMap,onRequestDataListener);
+
     }
     public static void getNoTakenWawa(final Context context, Map<String, String> params, final OnRequestDataListener listener) {
         newExcuteMapPost(GET_NOTAKEN_WAWA, context, params,listener);
@@ -121,8 +163,14 @@ public class Api {
     public static void requestConnectDevice(final Context context,  Map<String, String> params, final OnRequestDataListener listener) {
         newExcuteMapPost(REQUEST_CONNECT_DEVICE, context, params,listener);
     }
+    public static void backShare(final Context context,  Map<String, String> params, final OnRequestDataListener listener) {
+        newExcuteMapPost(SHARE_BACK, context, params,listener);
+    }
     public static void beginPay(final Context context, Map<String, String> params, final OnRequestDataListener listener) {
         newExcuteMapPost(BEGIN_PAY, context, params,listener);
+    }
+    public static void getLamp(final Context context, Map<String, String> params, final OnRequestDataListener listener) {
+        newExcuteMapPost(GET_LAMP, context, params,listener);
     }
 
     //积分商城商品
@@ -132,6 +180,10 @@ public class Api {
     //消息通知
     public static void getMessage(final Context context, Map<String,String> params, final OnRequestDataListener listener) {
         newExcuteMapPost(GET_MESSAGE, context, params,listener);
+    }
+    //加减大师排行榜
+    public static void getRanklsit(final Context context, Map<String,String> params, final OnRequestDataListener listener) {
+        newExcuteMapPost(GET_RANKLSIT, context, params,listener);
     }
 
 
@@ -198,8 +250,8 @@ public class Api {
         newExcuteMapPost(GET_CHANNEL_KEY, context, params,listener);
     }
 
-    public static void getBanner(final Context context, Map<String, String>   params, final OnRequestDataListener listener) {
-        newExcuteMapPost(GET_BANNER, context, params,listener);
+    public static void setGetGame(final Context context, Map<String, String>   params, final OnRequestDataListener listener) {
+        newExcuteMapPost(GET_GAMELSIT, context, params,listener);
     }
 
     //device banner
@@ -240,7 +292,8 @@ public class Api {
 
     private static void newExcuteMapPost(String storeIntegar, Context context, Map<String,String> params, final OnRequestDataListener listener) {
         final String netError = context.getString(R.string.net_error);
-
+       String mToken = SPUtils.getInstance().getString("token");
+        params.put("token",mToken);
         OkGo.<String>post(storeIntegar)
                 .tag(context)
                 .params(params,false)
@@ -271,7 +324,6 @@ public class Api {
 
     }
 
-
     protected static void newExcuteJsonPost(String url, final Context context, JSONObject params, final OnRequestDataListener listener){
         final String netError = context.getString(R.string.net_error);
 
@@ -284,7 +336,9 @@ public class Api {
                     public void onSuccess(Response<String> response) {
                         if(response.body()!=null){
                             JSONObject jsonObject = JSON.parseObject(response.body());
+
                             Integer code = jsonObject.getInteger("code");
+
                             if(code==200){
                                 listener.requestSuccess(0, jsonObject);
                             }else {
@@ -308,111 +362,18 @@ public class Api {
 
 
 
-   /* protected static void excutePostFile(String url, final Context context, RequestParams requestParams, final OnRequestDataListener listener) {
-        requestParams.put("os", OS);
-        requestParams.put("soft_ver", APP_VER);
-        requestParams.put("os_ver", OS_VER);
-        //String stamp = getTime();
-        //params.put("timestamp",stamp);
-        //params.put("sign",getMD5(KEY+stamp));
-        final String netError = context.getString(R.string.net_error);
-
-
-        OkGo.<String>post(url)
-                .tag(context)
-                .params(params,false)
-                .params()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        if(response.body()!=null){
-                            JSONObject jsonObject = JSON.parseObject(response.body());
-                            Integer code = jsonObject.getInteger("code");
-                            if(code==200){
-                                listener.requestSuccess(0, jsonObject);
-                            }else {
-                                listener.requestFailure(-1, jsonObject.getString("descrp"));
-                            }
-                        }else {
-                            listener.requestFailure(-1, netError);
-
-                        }
-                    }
-
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        listener.requestFailure(-1, netError);
-                    }
-                });
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.setTimeout(300000);
-
-        client.post(context, url, requestParams, new AsyncHttpResponseHandler() {
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                try {
-                    if (responseBody != null) {
-                        JSONObject data = getJsonObject(context, statusCode, responseBody, listener);
-                        if (data != null) {
-                            if(200 == data.getIntValue("code")){
-                                listener.requestSuccess(statusCode, data);
-                            }else {
-                                listener.requestFailure(-1, data.getString("descrp"));
-                            }
-
-                        }else{
-                            listener.requestFailure(-1, net_error);
-                        }
-                    } else {
-                        if (listener != null) {
-                            listener.requestFailure(-1, net_error);
-                        }
-                    }
-                } catch (Exception e) {
-                    //listener.requestFailure(-1, net_error);
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                try {
-                    if (null != context && responseBody != null) {
-                        String response = "";
-                        response = new String(responseBody, "UTF-8");
-                        LogUtils.i("response=" + response);
-                        if (listener != null) {
-                            listener.requestFailure(-1, net_error);
-                        }
-                    } else {
-                        if (listener != null) {
-                            listener.requestFailure(-1, net_error);
-                        }
-                    }
-                } catch (Exception e) {
-
-                }
-
-            }
-        });
-
-
-
-    }
-*/
     private static String getMD5(String str) {
         MessageDigest messageDigest = null;
         try {
             messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.reset();
             messageDigest.update(str.getBytes("UTF-8"));
-        } catch (Exception ignored) {
+        } catch (Exception e) {
         }
-        byte[] b = messageDigest != null ? messageDigest.digest() : new byte[0];
-        StringBuilder buf = new StringBuilder();
-        for (byte aB : b) {
-            int a = aB;
+        byte[] b = messageDigest.digest();
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < b.length; i++) {
+            int a = b[i];
             if (a < 0) {
                 a += 256;
             }
@@ -436,6 +397,5 @@ public class Api {
         return str;
 
     }
-
 
 }

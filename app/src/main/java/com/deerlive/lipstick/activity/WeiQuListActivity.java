@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,8 +16,10 @@ import com.deerlive.lipstick.R;
 import com.deerlive.lipstick.adapter.WeiQuRecyclerListAdapter;
 import com.deerlive.lipstick.base.BaseActivity;
 import com.deerlive.lipstick.common.Api;
+import com.deerlive.lipstick.fragment.WeiQuDialogFragment;
 import com.deerlive.lipstick.intf.OnRecyclerViewItemClickListener;
 import com.deerlive.lipstick.intf.OnRequestDataListener;
+import com.deerlive.lipstick.intf.WeiQuInterface;
 import com.deerlive.lipstick.model.GrabBean;
 import com.deerlive.lipstick.utils.SPUtils;
 import com.deerlive.lipstick.view.dialog.CashDialog;
@@ -32,7 +35,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 
-public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewItemClickListener {
+public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewItemClickListener,WeiQuInterface {
 
     @Bind(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
@@ -172,6 +175,8 @@ public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewIte
         int s = mListData.get(position).getRemoteUid();
         if (s == 1) {
             mListData.get(position).setRemoteUid(0);
+            ((SimpleItemAnimator)mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+
             mAdapter.notifyItemChanged(position);
             duihuan.setBackgroundResource(R.drawable.prize_button);
             duihuan.setEnabled(true);
@@ -191,6 +196,8 @@ public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewIte
                     if (mListData.get(i).getChange() == 1) {
                         if(mListData.get(i).getRemoteUid()==1){
                             mListData.get(i).setRemoteUid(0);
+                            ((SimpleItemAnimator)mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+
                             mAdapter.notifyItemChanged(i);
                         }
                     }
@@ -202,6 +209,8 @@ public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewIte
                     if (mListData.get(i).getChange() == 0) {
                         if(mListData.get(i).getRemoteUid()==1){
                             mListData.get(i).setRemoteUid(0);
+                            ((SimpleItemAnimator)mRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+
                             mAdapter.notifyItemChanged(i);
                         }
 
@@ -252,20 +261,26 @@ public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewIte
      *
      * @param v
      */
+    private List<GrabBean.InfoBean> Grabbiest = new ArrayList<>();
     public void duihuan(View v) {
-
-        List<GrabBean.InfoBean> list = new ArrayList<>();
+        Grabbiest.clear();
+        int price=0;
         for (GrabBean.InfoBean mgrab : mListData) {
             if (mgrab.getRemoteUid() == 1) {
-                list.add(mgrab);
+                Grabbiest.add(mgrab);
+                price=price+Integer.parseInt(mgrab.getExchange_price());
             }
         }
-        if (!list.isEmpty()) {
-            tiquDuihuan("0", list);
+        if (!Grabbiest.isEmpty()) {
+            WeiQuDialogFragment weiQuDialogFragment=WeiQuDialogFragment.
+                    newInstance(String.valueOf(Grabbiest.size()),String.valueOf(price));
+            weiQuDialogFragment.show(getSupportFragmentManager(),"weiQuDialogFragment");
+
         } else if (mListData.size() != 0) {
             toast(getResources().getString(R.string.data_empty_error));
         }
     }
+
 
     private void tiquDuihuan(String type, List<GrabBean.InfoBean> list) {
 
@@ -292,5 +307,14 @@ public class WeiQuListActivity extends BaseActivity implements OnRecyclerViewIte
         });
     }
 
+    @Override
+    public void requestSure() {
+        tiquDuihuan("0", Grabbiest);
+    }
+
+    @Override
+    public void requestCancel() {
+
+    }
 
 }

@@ -11,8 +11,8 @@ android {
         applicationId "com.deerlive.lipstick"
         minSdkVersion 16
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 3
+        versionName "2.0.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
@@ -90,6 +90,7 @@ dependencies {
     //noinspection GradleCompatible
 
     implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -120,6 +121,7 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:latest.release'
     compile 'com.github.mancj:SlideUp-Android:2.2.5'
     compile 'cn.bingoogolapple:bga-banner:2.1.6@aar'
+    compile 'com.github.iwgang:countdownview:2.1.6'
 
     compile 'com.lzy.net:okgo:3.0.4'
     compile 'com.lzy.net:okrx2:2.0.2'

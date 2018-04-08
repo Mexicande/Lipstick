@@ -1,5 +1,7 @@
 package com.deerlive.lipstick.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,26 +59,7 @@ public class UserCenterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 
-            View decorView = null;
-            try {
-                decorView = getWindow().getDecorView();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-
-            if (decorView != null) {
-                decorView.setSystemUiVisibility(option);
-            }
-
-            this.getWindow().setStatusBarColor(Color.TRANSPARENT);
-
-        }
         layoutIntegal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,13 +83,30 @@ public class UserCenterActivity extends BaseActivity {
 
         myBalanceText.setText(mmBalance);
         mUserName.setText(mmUserName);
-        Glide.with(this).load(mmAvator)
-                .error(R.mipmap.logo)
-                .transform(new GlideCircleTransform(this))
-                .into(mUserAvator);
+        final Context context = this;
+        if (isValidContextForGlide(context)) {
+            // Load image via Glide lib using context
+            Glide.with(this).load(mmAvator)
+                    .error(R.mipmap.logo)
+                    .transform(new GlideCircleTransform(this))
+                    .into(mUserAvator);
+        }
         mUserId.setText("ID:" + mId);
     }
-
+    public static boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (activity.isDestroyed() || activity.isFinishing()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     private void getUserInfo() {
         mId = SPUtils.getInstance().getString("id");
         mToken = SPUtils.getInstance().getString("token");

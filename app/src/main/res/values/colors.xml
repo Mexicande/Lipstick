@@ -24,6 +24,9 @@
     <color name="shape3">#F55261</color>
     <color name="shape2">#F9765B</color>
     <color name="text_color">#333333</color>
+    <color name="yellow_item">#FAE0A3</color>
+    <color name="blue_item">#1BD5A4</color>
+
     <color name="soild_color">#D6FED1</color>
     <color name="green_lion">#9FDF97</color>
     <color name="green_press">#9FDF97</color>

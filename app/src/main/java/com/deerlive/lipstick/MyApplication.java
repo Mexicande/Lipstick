@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.deerlive.lipstick.utils.ThreadPoolProxy;
 import com.deerlive.lipstick.utils.Utils;
 import com.hss01248.dialog.StyledDialog;
 import com.lzy.okgo.OkGo;
@@ -67,6 +68,10 @@ public class MyApplication extends Application {
 
         OkGo.getInstance().init(this)
                 .addCommonParams(params);
+    }
+    public static ThreadPoolProxy getThreadPool(){
+
+        return new ThreadPoolProxy(4, 4, 3000);
     }
 
     public static MyApplication getInstance(){
