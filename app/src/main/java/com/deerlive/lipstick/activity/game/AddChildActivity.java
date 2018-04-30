@@ -186,7 +186,7 @@ public class AddChildActivity extends BaseActivity implements DialogListener, Di
                 }
                 errorTime=errorTime+(mIndexPass-1)+i ;
                 sendRecord();
-                ClearedFragment clearedFragment= ClearedFragment.newInstance(mBlance);
+                ClearedFragment clearedFragment=ClearedFragment.newInstance(mBlance);
                 clearedFragment.show(getSupportFragmentManager(), "clearedFragment");
             }
         }else {

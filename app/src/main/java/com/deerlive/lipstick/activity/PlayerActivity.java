@@ -509,7 +509,6 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
         m_agoraAPI = AgoraAPIOnlySignal.getInstance(this, getResources().getString(R.string.agora_appid));
         int sdkVersion = m_agoraAPI.getSdkVersion();
 
-        log("sdkVersion==" + sdkVersion);
         if (m_agoraAPI.isOnline() == 0) {
             m_agoraAPI.login2(getResources().getString(R.string.agora_appid), mLocalUid + "", mSignalKey, 0, "", 5, 5);
         } else {
@@ -940,10 +939,6 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
                     mLookContainer.setVisibility(View.VISIBLE);
                     mImageGameStatus.setEnabled(true);
                     mPlayerTipsContainer.setVisibility(View.GONE);
-                    //startTimerPlay();
-//                mmPlayBalance = (Integer.parseInt(mmPlayBalance) - Integer.parseInt(mmPlayPrice))+"";
-//                SPUtils.getInstance().put("balance",mmPlayBalance);
-//                mPlayBalance.setText(mmPlayBalance);
                     break;
                 //我成功上机
                 case "5":
@@ -953,9 +948,6 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
                     mImageGameStatus.setEnabled(false);
                     mPlayerTipsContainer.setVisibility(View.GONE);
 
-                   /* if (gif_view.getVisibility() == View.GONE) {
-                        gif_view.setVisibility(View.VISIBLE);
-                    }*/
 
                     startTimerPlay();
                     if (TextUtils.isEmpty(mmPlayBalance) || TextUtils.isEmpty(mmPlayPrice)) {
@@ -1149,7 +1141,6 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     }
 
     public void resultYesGo(View v) {
-        //mZhuaZhuContainer.setVisibility(View.GONE);
         if (ds != null) {
             ds.dismiss();
         }
@@ -1259,29 +1250,7 @@ public class PlayerActivity extends BaseActivity implements View.OnTouchListener
     @Override
     public void onPause() {
         super.onPause();
-        // closeRecord();
     }
-
-
-  /*  File file = null;//录制的文件名
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        MediaProjection mediaProjection = mMediaProjectionManager.getMediaProjection(resultCode, data);
-        if (mediaProjection == null) {
-            Log.e("@@", "media projection is null");
-            return;
-        }
-        // video size
-        final int width = 480;
-        final int height = 640;
-        file = new File(Environment.getExternalStorageDirectory(),
-                "record-" + width + "x" + height + "-" + System.currentTimeMillis() + ".mp4");
-        final int bitrate = 2000000;
-        mRecorder = new ScreenRecorder(width, height, bitrate, 1, mediaProjection, file.getAbsolutePath());
-        mRecorder.start();
-    }*/
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {

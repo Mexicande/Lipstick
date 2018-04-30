@@ -32,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
-                View   decorView = getWindow().getDecorView();
+                View  decorView = getWindow().getDecorView();
                 int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -40,7 +40,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (decorView != null) {
                     decorView.setSystemUiVisibility(option);
                 }
-
                 this.getWindow().setStatusBarColor(Color.TRANSPARENT);
             } catch (Exception e) {
                 e.printStackTrace();

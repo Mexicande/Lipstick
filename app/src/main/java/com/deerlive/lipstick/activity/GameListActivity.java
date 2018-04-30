@@ -20,6 +20,7 @@ import com.deerlive.lipstick.common.WebviewActivity;
 import com.deerlive.lipstick.intf.OnRequestDataListener;
 import com.deerlive.lipstick.model.GameListBean;
 import com.deerlive.lipstick.utils.ActivityUtils;
+import com.deerlive.lipstick.utils.SPUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -39,7 +40,7 @@ public class GameListActivity extends BaseActivity {
     @Bind(R.id.refreshLayout)
     SmartRefreshLayout mRefreshLayout;
     private GameAdapter mGameAdapter;
-
+    private String mToken;
     public void goBack(View v) {
         finish();
     }
@@ -47,6 +48,8 @@ public class GameListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mToken = SPUtils.getInstance().getString("token");
+
         tvTitle.setText(R.string.title_game);
         initView();
         initDate();
@@ -55,7 +58,9 @@ public class GameListActivity extends BaseActivity {
 
     private void initDate() {
 
-        Api.setGetGame(this, new HashMap<String, String>(), new OnRequestDataListener() {
+        HashMap<String,String>parm=new HashMap<>();
+        parm.put("token",mToken);
+        Api.setGetGame(this, parm, new OnRequestDataListener() {
             @Override
             public void requestSuccess(int code, JSONObject data) {
                 if (mRefreshLayout.isRefreshing()) {
